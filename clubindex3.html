@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AMS Cybersecurity Society - Grand Stage Unveiling</title>
+  <style>
+    :root {
+      --gold: #d4af37;
+      --gold-light: #fff2a3;
+      --cyber-red: #ff3c3c;
+      --cyber-blue: #00d2ff;
+      --bg-dark: #030508;
+      --silver: #e0e6ed;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: #ffffff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+    }
+
+    canvas#bgCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+                  linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+      background-size: 50px 50px;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    header {
+      z-index: 5;
+      text-align: center;
+      margin-top: 35px;
+      pointer-events: none;
+    }
+
+    header h3 {
+      font-size: 1rem;
+      letter-spacing: 5px;
+      color: #88a0b5;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+
+    header h1 {
+      font-size: 2.2rem;
+      font-weight: 900;
+      letter-spacing: 4px;
+      background: linear-gradient(90deg, var(--cyber-red) 0%, var(--silver) 50%, var(--cyber-blue) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-transform: uppercase;
+    }
+
+    .stage-container {
+      position: relative;
+      z-index: 4;
+      width: 85vw;
+      max-width: 900px;
+      height: 58vh;
+      max-height: 580px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: radial-gradient(circle, rgba(15, 20, 30, 0.9) 0%, rgba(3, 5, 8, 1) 100%);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 0 50px rgba(0, 0, 0, 0.9);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+    }
+
+    .curtain {
+      position: absolute;
+      top: 0;
+      width: 50%;
+      height: 100%;
+      z-index: 6;
+      background: repeating-linear-gradient(
+        90deg,
+        #50000a 0px,
+        #800010 15px,
+        #a80018 30px,
+        #800010 45px,
+        #50000a 60px
+      );
+      box-shadow: inset 0 0 30px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.9);
+      transition: transform 1.8s cubic-bezier(0.77, 0, 0.175, 1);
+    }
+
+    .curtain-left {
+      left: 0;
+      border-right: 2px solid var(--gold);
+    }
+
+    .curtain-right {
+      right: 0;
+      border-left: 2px solid var(--gold);
+    }
+
+    .unveil-btn {
+      position: absolute;
+      z-index: 7;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #201a08 0%, #080602 100%);
+      border: 2px solid var(--gold);
+      box-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      transition: transform 0.3s ease, opacity 0.8s ease;
+    }
+
+    .unveil-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 45px rgba(212, 175, 55, 0.7);
+    }
+
+    .unveil-btn:active {
+      transform: scale(0.95);
+    }
+
+    .touch-icon {
+      width: 45px;
+      height: 45px;
+      margin-bottom: 10px;
+      filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.8));
+      animation: pulse 2s infinite;
+    }
+
+    .touch-text {
+      font-size: 0.9rem;
+      letter-spacing: 3px;
+      color: var(--gold-light);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.8; }
+      50% { transform: scale(1.1); opacity: 1; }
+    }
+
+    .logo-container {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 25px;
+    }
+
+    .logo-container img {
+      max-width: 90%;
+      max-height: 90%;
+      object-fit: contain;
+      transform: scale(0.85);
+      opacity: 0;
+      transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.4s, opacity 1s ease 0.4s;
+    }
+
+    .revealed .curtain-left {
+      transform: translateX(-100%);
+    }
+
+    .revealed .curtain-right {
+      transform: translateX(100%);
+    }
+
+    .revealed .unveil-btn {
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(0.5);
+    }
+
+    .revealed .logo-container img {
+      transform: scale(1);
+      opacity: 1;
+    }
+
+    .bottom-bar {
+      z-index: 5;
+      margin-bottom: 35px;
+      text-align: center;
+    }
+
+    .bottom-bar p {
+      font-size: 1.1rem;
+      letter-spacing: 5px;
+      color: #728495;
+      text-transform: uppercase;
+      font-weight: 600;
+      transition: color 1s ease;
+    }
+
+    .revealed .bottom-bar p {
+      color: var(--silver);
+    }
+  </style>
+</head>
+<body>
+
+  <audio id="revealSong" src="reveal-song.mp3" preload="auto"></audio>
+
+  <canvas id="bgCanvas"></canvas>
+  <div class="overlay"></div>
+
+  <header>
+    <h3>Inauguration Ceremony</h3>
+    <h1>Aalim Muhammed Salegh College of Engineering</h1>
+  </header>
+
+  <div class="stage-container" id="stageContainer">
+    <div class="curtain curtain-left"></div>
+    <div class="curtain curtain-right"></div>
+
+    <div class="unveil-btn" id="unveilBtn" onclick="triggerUnveil()">
+      <svg class="touch-icon" viewBox="0 0 24 24" fill="none" stroke="#d4af37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"></path>
+        <path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v6"></path>
+        <path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"></path>
+        <path d="M18 8a2 2 0 0 1 2 2v4a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"></path>
+      </svg>
+      <span class="touch-text">Touch To Unveil</span>
+    </div>
+
+    <div class="logo-container">
+      <img src="logo1.png" alt="AMS Cybersecurity Society Logo" id="logoImg">
+    </div>
+  </div>
+
+  <div class="bottom-bar">
+    <p id="statusText">System Ready • Awaiting Unveiling</p>
+  </div>
+
+  <script>
+    // Pre-load voices so they are ready on first click
+    let availableVoices = [];
+    function loadVoices() {
+      if ('speechSynthesis' in window) {
+        availableVoices = window.speechSynthesis.getVoices();
+      }
+    }
+    loadVoices();
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.onvoiceschanged = loadVoices;
+    }
+
+    // Canvas Background
+    const canvas = document.getElementById('bgCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    });
+
+    class Particle {
+      constructor() {
+        this.reset();
+      }
+
+      reset() {
+        this.x = Math.random() * width;
+        this.y = Math.random() * height;
+        this.vx = (Math.random() - 0.5) * 0.5;
+        this.vy = (Math.random() - 0.5) * 0.5;
+        this.size = Math.random() * 2 + 0.5;
+        this.alpha = Math.random() * 0.5 + 0.2;
+        this.isRed = this.x < width / 2 ? (Math.random() > 0.2) : (Math.random() > 0.8);
+      }
+
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+
+        if (this.x < 0 || this.x > width || this.y < 0 || this.y > height) {
+          this.reset();
+        }
+      }
+
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = this.isRed 
+          ? `rgba(255, 60, 60, ${this.alpha})` 
+          : `rgba(0, 210, 255, ${this.alpha})`;
+        ctx.fill();
+      }
+    }
+
+    const particles = Array.from({ length: 80 }, () => new Particle());
+
+    function animate() {
+      ctx.clearRect(0, 0, width, height);
+      particles.forEach(p => {
+        p.update();
+        p.draw();
+      });
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    function launchCelebration() {
+      const burstParticles = [];
+      const centerX = width / 2;
+      const centerY = height / 2;
+
+      for (let i = 0; i < 180; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 10 + 2;
+        const isRed = Math.cos(angle) < 0;
+
+        burstParticles.push({
+          x: centerX,
+          y: centerY,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          alpha: 1,
+          decay: Math.random() * 0.015 + 0.005,
+          size: Math.random() * 4 + 1.5,
+          color: isRed ? '255, 60, 60' : '0, 210, 255'
+        });
+      }
+
+      function animateBurst() {
+        if (burstParticles.length === 0) return;
+
+        burstParticles.forEach((p, index) => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.02;
+          p.alpha -= p.decay;
+
+          if (p.alpha <= 0) {
+            burstParticles.splice(index, 1);
+          } else {
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(${p.color}, ${p.alpha})`;
+            ctx.fill();
+          }
+        });
+
+        requestAnimationFrame(animateBurst);
+      }
+
+      animateBurst();
+    }
+
+    // Human-like Female Voice Selector
+   function speakAnnouncement() {
+  const voiceAudio = new Audio('clubvoice2.mp3');
+  voiceAudio.volume = 1;
+  voiceAudio.play().catch(err => console.log("Voice play error:", err));
+}
+
+    function triggerUnveil() {
+      const stage = document.getElementById('stageContainer');
+      const statusText = document.getElementById('statusText');
+      const song = document.getElementById('revealSong');
+
+      stage.classList.add('revealed');
+      statusText.innerText = "ATTACK • DEFEND • OFFICIALLY UNVEILED";
+
+      launchCelebration();
+
+      song.volume = 0.6;
+      song.play().catch(err => console.log("Audio deferred:", err));
+
+      speakAnnouncement();
+    }
+  </script>
+</body>
+</html>
