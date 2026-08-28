@@ -56,23 +56,50 @@
       pointer-events: none;
     }
 
+    /* Header Container */
     header {
       z-index: 5;
       text-align: center;
-      margin-top: 35px;
-      pointer-events: none;
+      margin-top: 15px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Stretched Banner Container */
+    .college-header-banner {
+      width: 90%;
+      max-width: 950px;
+      height: 85px;
+      background: #ffffff;
+      padding: 0;
+      border-radius: 8px;
+      box-shadow: 0 0 20px rgba(0, 210, 255, 0.2), 0 0 10px rgba(212, 175, 55, 0.3);
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .college-header-banner img {
+      width: 100%;
+      height: 100%;
+      object-fit: fill;
+      display: block;
     }
 
     header h3 {
-      font-size: 1rem;
+      font-size: 0.95rem;
       letter-spacing: 5px;
       color: #88a0b5;
       text-transform: uppercase;
-      margin-bottom: 5px;
+      margin-bottom: 3px;
     }
 
     header h1 {
-      font-size: 2.2rem;
+      font-size: 1.8rem;
       font-weight: 900;
       letter-spacing: 4px;
       background: linear-gradient(90deg, var(--cyber-red) 0%, var(--silver) 50%, var(--cyber-blue) 100%);
@@ -86,8 +113,8 @@
       z-index: 4;
       width: 85vw;
       max-width: 900px;
-      height: 58vh;
-      max-height: 580px;
+      height: 52vh;
+      max-height: 520px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -129,8 +156,8 @@
     .unveil-btn {
       position: absolute;
       z-index: 7;
-      width: 220px;
-      height: 220px;
+      width: 200px;
+      height: 200px;
       border-radius: 50%;
       background: radial-gradient(circle, #201a08 0%, #080602 100%);
       border: 2px solid var(--gold);
@@ -153,15 +180,15 @@
     }
 
     .touch-icon {
-      width: 45px;
-      height: 45px;
-      margin-bottom: 10px;
+      width: 40px;
+      height: 40px;
+      margin-bottom: 8px;
       filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.8));
       animation: pulse 2s infinite;
     }
 
     .touch-text {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       letter-spacing: 3px;
       color: var(--gold-light);
       text-transform: uppercase;
@@ -174,21 +201,70 @@
     }
 
     .logo-container {
+      position: relative;
       width: 100%;
       height: 100%;
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 25px;
     }
 
-    .logo-container img {
-      max-width: 90%;
-      max-height: 90%;
-      object-fit: contain;
-      transform: scale(0.85);
+    /* Video Player Fitted to Screen Frame */
+    .logo-container video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
       opacity: 0;
-      transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.4s, opacity 1s ease 0.4s;
+      transition: opacity 0.8s ease 0.4s;
+    }
+
+    /* Final Logo Image Enlarged to Fill Stage without Clipping */
+    .logo-container img {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 4px; /* Reduced padding from 20px to 4px to maximize size without cropping */
+      opacity: 0;
+      transform: scale(0.98);
+      transition: opacity 0.3s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Cyber Glitch Animation Effects */
+    @keyframes glitchMorph {
+      0% {
+        clip-path: inset(40% 0 61% 0);
+        transform: skew(0.6deg) translate(-10px, 5px);
+        filter: hue-rotate(90deg) contrast(200%);
+      }
+      20% {
+        clip-path: inset(92% 0 1% 0);
+        transform: skew(-0.8deg) translate(15px, -5px);
+        filter: hue-rotate(180deg) invert(100%);
+      }
+      40% {
+        clip-path: inset(10% 0 80% 0);
+        transform: skew(1.2deg) translate(-20px, 10px);
+        filter: hue-rotate(270deg);
+      }
+      60% {
+        clip-path: inset(65% 0 20% 0);
+        transform: skew(-1.5deg) translate(10px, -10px);
+        filter: hue-rotate(360deg) contrast(300%);
+      }
+      80% {
+        clip-path: inset(25% 0 58% 0);
+        transform: skew(0.3deg) translate(-5px, 2px);
+      }
+      100% {
+        clip-path: inset(0 0 0 0);
+        transform: skew(0deg) translate(0, 0);
+        filter: none;
+      }
+    }
+
+    .glitch-active {
+      animation: glitchMorph 0.6s steps(2, end) infinite;
     }
 
     .revealed .curtain-left {
@@ -205,19 +281,29 @@
       transform: scale(0.5);
     }
 
-    .revealed .logo-container img {
-      transform: scale(1);
+    .revealed .logo-container video {
       opacity: 1;
+    }
+
+    /* When video morphs to logo */
+    .logo-container.show-logo video {
+      opacity: 0 !important;
+      pointer-events: none;
+    }
+
+    .logo-container.show-logo img {
+      opacity: 1 !important;
+      transform: scale(1) !important;
     }
 
     .bottom-bar {
       z-index: 5;
-      margin-bottom: 35px;
+      margin-bottom: 25px;
       text-align: center;
     }
 
     .bottom-bar p {
-      font-size: 1.1rem;
+      font-size: 1rem;
       letter-spacing: 5px;
       color: #728495;
       text-transform: uppercase;
@@ -238,8 +324,12 @@
   <div class="overlay"></div>
 
   <header>
+    <div class="college-header-banner">
+      <img src="college-banner.png" alt="Aalim Muhammed Salegh College of Engineering">
+    </div>
+
     <h3>Inauguration Ceremony</h3>
-    <h1>Aalim Muhammed Salegh College of Engineering</h1>
+    <h1>AMS Cybersecurity Society</h1>
   </header>
 
   <div class="stage-container" id="stageContainer">
@@ -256,8 +346,9 @@
       <span class="touch-text">Touch To Unveil</span>
     </div>
 
-    <div class="logo-container">
-      <img src="logo1.png" alt="AMS Cybersecurity Society Logo" id="logoImg">
+    <div class="logo-container" id="logoContainer">
+      <video id="revealVideo" src="intro-video.mp4" playsinline preload="auto"></video>
+      <img src="logo.png" alt="AMS Cybersecurity Society Logo" id="logoImg">
     </div>
   </div>
 
@@ -266,18 +357,6 @@
   </div>
 
   <script>
-    // Pre-load voices so they are ready on first click
-    let availableVoices = [];
-    function loadVoices() {
-      if ('speechSynthesis' in window) {
-        availableVoices = window.speechSynthesis.getVoices();
-      }
-    }
-    loadVoices();
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.onvoiceschanged = loadVoices;
-    }
-
     // Canvas Background
     const canvas = document.getElementById('bgCanvas');
     const ctx = canvas.getContext('2d');
@@ -383,12 +462,23 @@
       animateBurst();
     }
 
-    // Human-like Female Voice Selector
-   function speakAnnouncement() {
-  const voiceAudio = new Audio('clubv.mp3');
-  voiceAudio.volume = 1;
-  voiceAudio.play().catch(err => console.log("Voice play error:", err));
-}
+    function speakAnnouncement() {
+      const voiceAudio = new Audio('clubvoice2.mp3');
+      voiceAudio.volume = 1;
+      voiceAudio.play().catch(err => console.log("Voice play error:", err));
+    }
+
+    const video = document.getElementById('revealVideo');
+    const logoContainer = document.getElementById('logoContainer');
+
+    video.addEventListener('ended', () => {
+      logoContainer.classList.add('glitch-active');
+
+      setTimeout(() => {
+        logoContainer.classList.remove('glitch-active');
+        logoContainer.classList.add('show-logo');
+      }, 600);
+    });
 
     function triggerUnveil() {
       const stage = document.getElementById('stageContainer');
@@ -399,6 +489,8 @@
       statusText.innerText = "ATTACK • DEFEND • OFFICIALLY UNVEILED";
 
       launchCelebration();
+
+      video.play().catch(err => console.log("Video play error:", err));
 
       song.volume = 0.6;
       song.play().catch(err => console.log("Audio deferred:", err));
